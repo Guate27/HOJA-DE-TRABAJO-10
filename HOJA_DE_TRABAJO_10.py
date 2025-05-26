@@ -90,3 +90,60 @@ class Grafo:
         ruta.append(destino)
         return ruta
 
+
+def main():
+    grafo = Grafo()
+    grafo.leer_grafo_de_archivo('logistica.txt')
+
+    dist, next_node = grafo.floyd_warshall()
+    grafo.mostrar_matriz_adyacencia(dist)
+
+    centro = grafo.calcular_centro(dist)
+    print(f"La ciudad que queda en el centro del grafo es: {centro}")
+
+    options=True
+
+    while options:
+        print("\nOpciones:")
+        print("1. Preguntar por la ruta más corta entre dos ciudades")
+        print("2. Indicar el centro del grafo")
+        print("3. Modificar el grafo")
+        print("4. Finalizar el programa")
+        opcion = input("Seleccione una opción: ")
+
+        if opcion == '1':
+            ciudad_origen = input("Ingrese la ciudad de origen: ")
+            ciudad_destino = input("Ingrese la ciudad de destino: ")
+            ruta = grafo.ruta_mas_corta(ciudad_origen, ciudad_destino, next_node)
+            if ruta:
+                print(f"La ruta más corta de {ciudad_origen} a {ciudad_destino} es: {' -> '.join(ruta)}")
+            else:
+                print("No hay ruta disponible entre las ciudades.")
+
+        elif opcion == '2':
+            print(f"La ciudad que queda en el centro del grafo es: {centro}")
+
+        elif opcion == '3':
+            print("Modificar el grafo:")
+            ciudad1 = input("Ingrese la ciudad 1: ")
+            ciudad2 = input("Ingrese la ciudad 2: ")
+            tiempos = {
+                'normal': int(input("Ingrese el tiempo normal: ")),
+                'lluvia': int(input("Ingrese el tiempo con lluvia: ")),
+                'nieve': int(input("Ingrese el tiempo con nieve: ")),
+                'tormenta': int(input("Ingrese el tiempo con tormenta: "))
+            }
+            grafo.agregar_arco(ciudad1, ciudad2, tiempos)
+            dist, next_node = grafo.floyd_warshall()  # Recalcular después de modificar
+            centro = grafo.calcular_centro(dist)  # Recalcular el centro
+
+        elif opcion == '4':
+            print("Finalizando el programa.")
+            sys.exit()
+
+        else:
+            print("Opción no válida. Intente de nuevo.")
+
+if __name__ == "__main__":
+    main()
+
